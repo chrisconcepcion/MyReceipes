@@ -1,6 +1,6 @@
 class RecipesController < ApplicationController
   def index
-    @recipes = Recipe.all
+    @recipes = Recipe.all.sort_by{|likes| likes.thumbs_up_total}.reverse
   end
   
   def show
@@ -33,12 +33,21 @@ class RecipesController < ApplicationController
       redirect_to recipe_path(@recipe.id)
     else
       render :edit
-      
     end
+  end
     
-  end  
+  def like
+    @recipe = Recipe.find_by id: params[:id]
+    like = Like.new(like: params[:like], chef_id: Chef.first, recipe_id: @recipe.id)
+    if like.save
+      flash[:success] = "Your selection was successful"
+      redirect_to :back
+    else
+      flash[:danger] = "You can only like/dislike a recipe once"
+      redirect_to :back
+    end
+  end
     
-
   private
   
   def recipe_params
