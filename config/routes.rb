@@ -10,7 +10,7 @@ Rails.application.routes.draw do
     end 
   end
   
-  resources :chefs, only: [:create, :edit, :update]
+  resources :chefs, only: [:create, :edit, :update, :show]
   
   get '/register', to: 'chefs#new'
 end
