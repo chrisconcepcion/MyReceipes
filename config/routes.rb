@@ -9,4 +9,8 @@ Rails.application.routes.draw do
       post 'like'
     end 
   end
+  
+  resources :chefs, only: [:create, :edit, :update]
+  
+  get '/register', to: 'chefs#new'
 end
