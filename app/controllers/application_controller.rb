@@ -12,4 +12,11 @@ class ApplicationController < ActionController::Base
   def logged_in?
     !!current_user
   end
+    
+  def require_user
+    if logged_in? != true
+      flash[:danger] = "You must log in to do this action"
+      redirect_to :home
+    end
+  end
 end

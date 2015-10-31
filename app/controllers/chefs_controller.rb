@@ -31,7 +31,7 @@ class ChefsController < ApplicationController
   def update
     if @chef.update(chef_params)
       flash[:success] = "Chef was successfully updated"
-      redirect_to recipes_path
+      redirect_to chef_path(@chef.id)
     else
       flash[:danger] = "Opps, something went wrong!"
       render :edit

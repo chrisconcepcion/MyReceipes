@@ -1,10 +1,13 @@
 class RecipesController < ApplicationController
+   before_action :set_recipe, only: [:edit, :update, :show, :like]
+   before_action :require_user, expect: [:show, :index, :like]
+   before_action :require_same_user, only: [:edit, :update]
+   
   def index
     @recipes = Recipe.paginate(page: params[:page], per_page: 2)
   end
   
   def show
-    @recipe = Recipe.find_by id: params[:id]
   end
   
   def new
@@ -13,7 +16,7 @@ class RecipesController < ApplicationController
   
   def create
     @recipe = Recipe.new(recipe_params)
-    @recipe.chef_id = 1
+    @recipe.chef_id = current_user.id
     if @recipe.save
       flash[:success] = "Your recipe was successfully created!"
       redirect_to recipe_path(@recipe.id)
@@ -23,11 +26,9 @@ class RecipesController < ApplicationController
   end
   
   def edit
-    @recipe = Recipe.find_by id: params[:id]
   end
   
   def update
-    @recipe = Recipe.find_by id: params[:id]
     if @recipe.update(recipe_params)
       flash[:success] = "Your recipe has been updated successfully!"
       redirect_to recipe_path(@recipe.id)
@@ -37,8 +38,7 @@ class RecipesController < ApplicationController
   end
     
   def like
-    @recipe = Recipe.find_by id: params[:id]
-    like = Like.new(like: params[:like], chef_id: Chef.first, recipe_id: @recipe.id)
+    like = Like.new(like: params[:like], chef_id: current_user.id, recipe_id: @recipe.id)
     if like.save
       flash[:success] = "Your selection was successful"
       redirect_to :back
@@ -52,5 +52,16 @@ class RecipesController < ApplicationController
   
   def recipe_params
     params.require(:recipe).permit(:id, :name, :summary, :description, :created_at, :updated_at, :chef_id, :picture)
+  end
+  
+  def set_recipe
+    @recipe = Recipe.find_by id: params[:id]
+  end
+  
+  def require_same_user
+    if @recipe.chef != current_user
+      flash[:danger] = "You are not allowed to do this action"
+      redirect_to :home
+    end
   end
 end
