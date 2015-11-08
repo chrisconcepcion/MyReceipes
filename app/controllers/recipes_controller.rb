@@ -17,6 +17,7 @@ class RecipesController < ApplicationController
   def create
     @recipe = Recipe.new(recipe_params)
     @recipe.chef_id = current_user.id
+    binding.pry
     if @recipe.save
       flash[:success] = "Your recipe was successfully created!"
       redirect_to recipe_path(@recipe.id)
@@ -51,7 +52,7 @@ class RecipesController < ApplicationController
   private
   
   def recipe_params
-    params.require(:recipe).permit(:id, :name, :summary, :description, :created_at, :updated_at, :chef_id, :picture)
+    params.require(:recipe).permit(:id, :name, :summary, :description, :created_at, :updated_at, :chef_id, :picture, { :style_ids => [] }, { :ingredient_ids => [] } )
   end
   
   def set_recipe

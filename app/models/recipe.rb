@@ -5,7 +5,6 @@ class Recipe < ActiveRecord::Base
   has_many :styles, through: :recipe_styles
   has_many :recipe_ingredients
   has_many :ingredients, through: :recipe_ingredients
-
   validates :name, presence: true, length: { in: 5..99 }
   validates :summary, presence: true, length: { in: 10..149 }
   validates :description, presence: true, length: { in: 20..499 }
