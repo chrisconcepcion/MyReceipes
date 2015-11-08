@@ -11,8 +11,10 @@
     <% if logged_in? and (@recipe.chef == current_user || current_user.admin?)%>
       <%= link_to "Edit this Recipe", edit_recipe_path(@recipe.id), class: "btn btn-success pull-right" %>
     <% end %>
+    <% if logged_in? %>
     <% if current_user.admin? %>
       <%= link_to "[Delete Recipe]", recipe_path(@recipe.id), method: :delete, data: { confirm: "Are you sure?" } %>
+    <% end %>
     <% end %>
     <h3><%= @recipe.summary %></h3>
     <div class="show_recipe">
