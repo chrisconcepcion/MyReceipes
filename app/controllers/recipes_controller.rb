@@ -1,7 +1,9 @@
 class RecipesController < ApplicationController
    before_action :set_recipe, only: [:edit, :update, :show, :like]
    before_action :require_user, only: [:edit, :update, :like]
-   before_action :require_same_user, only: [:edit, :update]
+   before_action :require_same_user_or_admin, only: [:edit, :update]
+   before_action :require_admin, only: [:delete]
+   
    
   def index
     @recipes = Recipe.paginate(page: params[:page], per_page: 2)
@@ -48,6 +50,13 @@ class RecipesController < ApplicationController
       redirect_to :back
     end
   end
+  
+  def destroy
+    recipe = Recipe.find_by id: params[:id]
+    recipe.destroy
+    flash[:success] = "You have successfully destroyed a recipe"
+    redirect_to recipes_path
+  end
     
   private
   
@@ -59,10 +68,17 @@ class RecipesController < ApplicationController
     @recipe = Recipe.find_by id: params[:id]
   end
   
-  def require_same_user
-    if @recipe.chef != current_user
+  def require_same_user_or_admin
+    if @recipe.chef != current_user && !current_user.admin?
       flash[:danger] = "You are not allowed to do this action"
       redirect_to :home
+    end
+  end
+  
+  def require_admin
+    if !current_user.admin?
+      flash[:danger] = "This action can only be preformed by an admin"
+      redirect_to recipes_path
     end
   end
 end
