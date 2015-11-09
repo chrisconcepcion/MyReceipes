@@ -7,7 +7,10 @@ Rails.application.routes.draw do
   resources :recipes do
     member do
       post 'like'
-    end 
+    end
+    member do
+      resources :reviews, only: [:create]
+    end
   end
   
   resources :chefs, only: [:index, :create, :edit, :update, :show]
@@ -19,4 +22,5 @@ Rails.application.routes.draw do
   
   resources :styles, only: [:new, :create, :show]
   resources :ingredients, only: [:new, :create, :show]
+
 end

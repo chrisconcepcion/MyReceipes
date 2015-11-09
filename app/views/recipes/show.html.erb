@@ -39,4 +39,31 @@
   </div>
 </div>
 
+<% if logged_in? %>
+<div class="row">
+  <div class="col-md-6">
+    <%= form_for @review do |f| %>
+      <%= f.label :body %>
+      <%= f.text_area :body, rows: 6 %>
+      <%= f.submit %>
+    <% end %>
+  </div>
+</div>
+<% end %>
+
+<div class="row">
+  <div class="col-md-8">
+    <h4>Reviews:</h4>
+    <% @recipe.reviews.each do |review| %>
+    <div class="well">
+      <p><%= review.body %></p>
+      <span class='quiet'><small> by: <%= link_to review.chef.chefname, chef_path(review.chef.id) %>,</small></span>
+      <span class='quiet'><small> created: <%= time_ago_in_words(review.created_at) %> ago,</small></span>
+      <span class='quiet'><small> updated: <%= time_ago_in_words(review.updated_at) %>,</small></span>
+    </div>
+    <% end %>
+  </div>
+</div>
+
+
 <h5><%= link_to 'Return to Recipes Listing', recipes_path, class: "btn btn-warning btn-small" %></h5>
